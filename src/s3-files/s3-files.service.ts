@@ -1,22 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
-import { UploadFileDto } from './dto/upload.dto';
+import { error } from 'console';
 
 @Injectable()
 export class S3FilesService {
     private s3 = new AWS.S3();
+    private readonly bucketName = process.env.AWS_BUCKET;
 
     constructor(){}
 
-    async uploadFile(body: UploadFileDto) {
-
-        const { file, fileName } = body;
-
-        const decodeFile = Buffer.from(file, 'base64');
+    async uploadFile(file: Express.Multer.File , fileName: string) {
+        if (this.bucketName == undefined) {
+            throw error("Bucket name is not defined");
+        }
         const params = {
-            Bucket: "ia-bistec-images",
-            Key: `/files/${fileName}`,
-            Body: decodeFile
+            Bucket: this.bucketName,
+            Key: `${fileName}`,
+            Body: file.buffer,
+            ContentType: file.mimetype
         };
         try {
             const responseS3 = await this.s3.upload(params).promise();
@@ -27,8 +28,11 @@ export class S3FilesService {
     }
 
     async listFiles() {
+        if (this.bucketName == undefined) {
+            throw error("Bucket name is not defined");
+        }
         const params = {
-            Bucket: "ia-bistec-images",
+            Bucket: this.bucketName,
         };
         try {
             const listData = await this.s3.listObjectsV2(params).promise();
@@ -39,9 +43,12 @@ export class S3FilesService {
     }
 
     async readFile(fileName: string) {
+        if (this.bucketName == undefined) {
+            throw error("Bucket name is not defined");
+        }
         const params = {
-            Bucket: "ia-bistec-images",
-            Key: `/files/${fileName}`,
+            Bucket: this.bucketName,
+            Key: `${fileName}`,
         };
         try {
             // const objResponse = await this.s3.headObject(params).promise();
@@ -58,9 +65,12 @@ export class S3FilesService {
     }
 
     async deleteFile(fileName: string) {
+        if (this.bucketName == undefined) {
+            throw error("Bucket name is not defined");
+        }
         const params = {
             Bucket: "ia-bistec-images",
-            Key: `/files/${fileName}`,
+            Key: `${fileName}`,
         };
         try {
             this.s3.deleteObject(params).promise();

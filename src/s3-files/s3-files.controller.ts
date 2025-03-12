@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Res } from '@nestjs/common';
-import { UploadFileDto } from './dto/upload.dto';
-import { Response } from 'express';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Response, Express } from 'express';
 import { S3FilesService } from './s3-files.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('api/v1/s3Files')
 export class S3FilesController {
@@ -10,12 +10,13 @@ export class S3FilesController {
     ){}
     
     @Post('upload')
-    async uploadFile(@Body() body: UploadFileDto, @Res() res: Response) {
+    @UseInterceptors(FileInterceptor('file'))
+    async uploadFile(@UploadedFile() file: Express.Multer.File, @Body('fileName') fileName: string, @Res() res: Response) {
         try {
-            const response = await this.s3FileService.uploadFile(body);
+            const response = await this.s3FileService.uploadFile(file, fileName);
             res.status(HttpStatus.OK).send(response);
         } catch (error) {
-            throw error;
+            res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(error.message);
         }
     }
 

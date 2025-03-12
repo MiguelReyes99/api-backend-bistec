@@ -2,18 +2,14 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { S3FilesService } from './s3-files/s3-files.service';
 import { S3FilesModule } from './s3-files/s3-files.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ImageModule } from './image/image.module';
-import { Image } from './image/entity/image.entity';
-import { ImageService } from './image/image.service';
-import { Repository } from 'typeorm';
 
 @Module({
   imports: [
     S3FilesModule,
-    // ConfigModule.forRoot(),
+    ConfigModule.forRoot(),
     // TypeOrmModule.forRoot({
     //   "type": "mysql",
     //   "host": process.env.DB_HOST,
