@@ -4,15 +4,12 @@ import { error } from 'console';
 
 @Injectable()
 export class S3FilesService {
-    private s3 = new AWS.S3();
-    private readonly bucketName = process.env.AWS_BUCKET;
+    private s3 = new AWS.S3();AWS_BUCKET;
+    private readonly bucketName = "ia-bistec-images";
 
     constructor(){}
 
     async uploadFile(file: Express.Multer.File , fileName: string) {
-        if (this.bucketName == undefined) {
-            throw error("Bucket name is not defined");
-        }
         const params = {
             Bucket: this.bucketName,
             Key: `${fileName}`,
@@ -28,9 +25,6 @@ export class S3FilesService {
     }
 
     async listFiles() {
-        if (this.bucketName == undefined) {
-            throw error("Bucket name is not defined");
-        }
         const params = {
             Bucket: this.bucketName,
         };
@@ -43,9 +37,6 @@ export class S3FilesService {
     }
 
     async readFile(fileName: string) {
-        if (this.bucketName == undefined) {
-            throw error("Bucket name is not defined");
-        }
         const params = {
             Bucket: this.bucketName,
             Key: `${fileName}`,
@@ -65,9 +56,6 @@ export class S3FilesService {
     }
 
     async deleteFile(fileName: string) {
-        if (this.bucketName == undefined) {
-            throw error("Bucket name is not defined");
-        }
         const params = {
             Bucket: this.bucketName,
             Key: `${fileName}`,
