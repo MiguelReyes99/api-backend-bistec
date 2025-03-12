@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
-import { error } from 'console';
 
 @Injectable()
 export class S3FilesService {
-    private s3 = new AWS.S3();AWS_BUCKET;
+    private s3 = new AWS.S3();
     private readonly bucketName = "ia-bistec-images";
 
     constructor(){}
