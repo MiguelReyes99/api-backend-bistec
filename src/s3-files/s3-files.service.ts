@@ -69,7 +69,7 @@ export class S3FilesService {
             throw error("Bucket name is not defined");
         }
         const params = {
-            Bucket: "ia-bistec-images",
+            Bucket: this.bucketName,
             Key: `${fileName}`,
         };
         try {
